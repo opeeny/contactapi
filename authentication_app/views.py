@@ -17,6 +17,7 @@ class RegisterView(GenericAPIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class LoginView(GenericAPIView):
+
     def post(self, request):
         data = request.data
         username = data.get('username', '')
@@ -25,8 +26,10 @@ class LoginView(GenericAPIView):
         
         if user:
             auth_token = jwt.encode({'username': user.username}, settings.JWT_SECRET_KEY)
-            serializer = UserSerializer(user)
-            data = {'user': serializer.data, 'token': auth_token}
+            serializer_class = UserSerializer()
+            # serializer = UserSerializer(user)
+            data = {'user': serializer_class.data, 'token': auth_token}
+            # data = {'user': serializer.data, 'token': auth_token}
             return Response(data, status=status.HTTP_200_OK)
             #send user reponse
         return Response({'detail': 'Invalid credential'}, status=status.HTTP_401_UNAUTHORIZED)
